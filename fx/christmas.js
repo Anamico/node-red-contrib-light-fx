@@ -36,6 +36,7 @@ module.exports = function(RED) {
             });
             return;
         }
+        node.status({});
 
         /**
          * listen for panel state changes
