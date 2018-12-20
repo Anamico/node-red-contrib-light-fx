@@ -28,6 +28,15 @@ module.exports = function(RED) {
             }, []);
         }
 
+        if (!node.lightNames) {
+            node.status({
+                fill:   "red",
+                shape:  "dot",
+                text:   "You need at least one named light"
+            });
+            return;
+        }
+
         /**
          * listen for panel state changes
          *
