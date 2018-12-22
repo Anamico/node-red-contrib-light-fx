@@ -84,17 +84,17 @@ module.exports = function(RED) {
          */
         node.on('input', function(msg) {
             if (msg.payload.on === true) {
+                node.context().global.set(node.nodeId + '_festive', true);
                 if (!node.timer) {
                     festive();
                     node.timer = setInterval(festive, 1000);
-                    node.context().global.set(node.nodeId + '_festive', true);
                 }
             } else if (msg.payload.on === false) {
+                node.context().global.set(node.nodeId + '_festive', false);
                 if (node.timer) {
                     clearInterval(node.timer);
                     node.timer = null;
                     node.status({});
-                    node.context().global.set(node.nodeId + '_festive', false);
                 }
             }
         });
