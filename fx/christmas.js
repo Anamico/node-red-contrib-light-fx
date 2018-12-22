@@ -24,7 +24,7 @@ module.exports = function(RED) {
         ];
 
         node.nodeId = node.id.replace(/\./g, '_');
-        node.on = node.context().global.get(node.nodeId + '_on') || true;
+        node.festive = node.context().global.get(node.nodeId + '_festive') || true;
 
         node.lightNames = null;
         if (config.lightNames && config.lightNames.split) {
@@ -74,7 +74,7 @@ module.exports = function(RED) {
             });
         }
 
-        if (node.on) {
+        if (node.festive) {
             node.timer = setInterval(festive, 1000);
         }
 
@@ -86,14 +86,14 @@ module.exports = function(RED) {
                 if (!node.timer) {
                     festive();
                     node.timer = setInterval(festive, 1000);
-                    node.context().global.set(node.nodeId + '_on', true);
+                    node.context().global.set(node.nodeId + '_festive', true);
                 }
             } else if (msg.payload.on === false) {
                 if (node.timer) {
                     clearInterval(node.timer);
                     node.timer = null;
                     node.status({});
-                    node.context().global.set(node.nodeId + '_on', false);
+                    node.context().global.set(node.nodeId + '_festive', false);
                 }
             }
         });
