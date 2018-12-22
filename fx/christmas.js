@@ -25,6 +25,7 @@ module.exports = function(RED) {
 
         node.nodeId = node.id.replace(/\./g, '_');
         node.festive = node.context().global.get(node.nodeId + '_festive') || true;
+        node.log('festive = ' + node.festive);
 
         node.lightNames = null;
         if (config.lightNames && config.lightNames.split) {
@@ -74,7 +75,7 @@ module.exports = function(RED) {
             });
         }
 
-        if (node.festive) {
+        if (node.festive === true) {
             node.timer = setInterval(festive, 1000);
         }
 
