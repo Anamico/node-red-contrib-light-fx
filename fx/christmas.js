@@ -17,6 +17,12 @@ module.exports = function(RED) {
         ];
         var offset = 0;
 
+        const statusColours = [
+            'green',
+            'red',
+            'blue'
+        ];
+
         node.lightNames = null;
         if (config.lightNames && config.lightNames.split) {
             node.lightNames = config.lightNames.split('\n').reduce(function(memo, name) {
@@ -39,14 +45,20 @@ module.exports = function(RED) {
         node.status({});
 
         /**
-         * listen for panel state changes
+         * timer to display christmas effects
          *
          * todo: make this more efficient
          */
-        node.timer = setInterval(function() {
+        function festive() {
             offset = (offset + 1) % colours.length;
             var index = offset;
+            node.status({
+                fill:   statusColours[offset % 3],
+                shape:  "dot",
+                text:   "Festive"
+            });
             node.lightNames.forEach(function (lightName) {
+
                 node.send({
                     payload: {
                         lights: [ lightName ],
@@ -57,8 +69,27 @@ module.exports = function(RED) {
                 });
                 index = (index + 1) % colours.length;
             });
+        }
 
-        }, 1000);
+        node.timer = setInterval(festive, 1000);
+
+        /**
+         * handle inputs
+         */
+        node.on('input', function(msg) {
+            if (msg.payload.on === true) {
+                if (!node.timer) {
+                    festive();
+                    node.timer = setInterval(festive, 1000);
+                }
+            } else if (msg.payload.on === false) {
+                if (node.timer) {
+                    clearInterval(node.timer);
+                    node.timer = null;
+                    node.status({});
+                }
+            }
+        });
 
         /**
          * clean up on node removal

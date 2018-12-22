@@ -5,10 +5,13 @@
         defaults: {
             name: { value : '', required: false },
             lightNames: { value: '', required: true },
-            mode: { value : 'Original', required : true }
+            mode: { value : 'Original', required : true },
+            // delay: { value : '', required : false },
+            // transition: { value : '', required : false }
         },
-        inputs: 0,
+        inputs: 1,
         outputs: 1,
+        inputLabels: "control",
         outputLabels: "festive lighting",
         icon: "christmas.png",
         label: function() {
