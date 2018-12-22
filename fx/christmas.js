@@ -23,6 +23,9 @@ module.exports = function(RED) {
             'blue'
         ];
 
+        node.nodeId = node.id.replace(/\./g, '_');
+        node.on = node.context().global.get(node.nodeId + '_on') || true;
+
         node.lightNames = null;
         if (config.lightNames && config.lightNames.split) {
             node.lightNames = config.lightNames.split('\n').reduce(function(memo, name) {
@@ -71,7 +74,9 @@ module.exports = function(RED) {
             });
         }
 
-        node.timer = setInterval(festive, 1000);
+        if (node.on) {
+            node.timer = setInterval(festive, 1000);
+        }
 
         /**
          * handle inputs
@@ -81,12 +86,14 @@ module.exports = function(RED) {
                 if (!node.timer) {
                     festive();
                     node.timer = setInterval(festive, 1000);
+                    node.context().global.set(node.nodeId + '_on', true);
                 }
             } else if (msg.payload.on === false) {
                 if (node.timer) {
                     clearInterval(node.timer);
                     node.timer = null;
                     node.status({});
+                    node.context().global.set(node.nodeId + '_on', false);
                 }
             }
         });
